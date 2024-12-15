@@ -1,0 +1,15 @@
+{
+  "modName": "PB_PlayerBlink",
+  "keybinds": [
+    {
+      "id": "KeyFlash",
+      "desc": "",
+  "action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "FlashStart",
+    "params": [ ] }
+        }
+    }
+  ]
+}

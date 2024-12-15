@@ -1,0 +1,196 @@
+{
+  "modName": "PB_PlayerBlink",
+  "displayName": "Tracer Blink for Players",
+  "minMcmVersion": 2,
+  "pluginRequirements": [],
+  "content": [
+    {
+      "text": "UI Settings",
+      "type": "section"
+    },
+{
+	  "id": "iHUDType",
+            "text": "Blink Charge UI Change",
+            "type": "dropdown",
+            "help": "Replaces the blink charge icon.",
+            "valueOptions": {
+	    "options" : ["Overwatch", "Battery", "Circle Tri-Slice", "Tri-Nested Circle"],
+                "sourceType": "PropertyValueInt",
+                "sourceForm": "PB_PlayerBlink.esp|813",
+                "propertyName": "iHUDType"
+            }, 
+"action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "MCMIconChange",
+    "params": [ ] }
+        },
+   {
+      "text": "Hotkey Settings",
+      "type": "section"
+    },
+	{
+	  "id": "KeyFlash",
+	  "text": "Hotkey",
+	  "type": "hotkey",
+	  "help": "",
+	  "valueOptions": {
+		"allowModifierKeys": false
+	  }
+	},
+   {
+      "text": "INI File Hotkey Settings",
+      "type": "section"
+    },
+        {
+          "text": "INI File Hotkey",
+          "type": "switcher",
+          "help": "The Blink mode hotkey is set via the keycode in the blinkHotkey.ini file in the mod's folder/F4SE/Plugins. If it can be set through MCM, do not use this option.",
+          "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "PB_PlayerBlink.esp|80A"
+          }, 
+	 "action": {
+  	  "type": "CallFunction",
+            "form": "PB_PlayerBlink.esp|813",
+  	  "function": "RegisterIniFileKey",
+  	  "params": []
+	}
+          },
+    {
+      "text": "UI Settings",
+      "type": "section"
+    },
+{
+	  "id": "fPosX",
+            "text": "UI Position (Horizontal)",
+            "type": "slider",
+            "help": "Adjust the horizontal position of the UI as a percentage (0 = left, 100 = right).",
+            "valueOptions": {
+                "min": 0,
+                "max": 100,
+                "step": 0.1,
+                "sourceType": "PropertyValueFloat",
+                "sourceForm": "PB_PlayerBlink.esp|813",
+                "propertyName": "fPosX"
+            }, 
+"action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "MCMPosChange",
+    "params": [ ] }
+        },
+{
+	  "id": "fPosZ",
+            "text": "UI Position (Vertical)",
+            "type": "slider",
+            "help": "Adjust the vertical position of the UI as a percentage (0 = top, 100 = bottom).",
+            "valueOptions": {
+                "min": 0,
+                "max": 100,
+                "step": 0.1,
+                "sourceType": "PropertyValueFloat",
+                "sourceForm": "PB_PlayerBlink.esp|813",
+                "propertyName": "fPosZ"
+            },
+"action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "MCMPosChange",
+    "params": [ ] }
+        },
+{
+	  "id": "fScale",
+            "text": "UI Size",
+            "type": "slider",
+            "help": "This is the size of the UI.",
+            "valueOptions": {
+                "min": 0.3,
+                "max": 2.5,
+                "step": 0.1,
+                "sourceType": "PropertyValueFloat",
+                "sourceForm": "PB_PlayerBlink.esp|813",
+                "propertyName": "fScale"
+            },
+"action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "MCMScaleChange",
+    "params": [ ] }
+        },
+{
+            "text": "UI Height Ratio",
+            "type": "slider",
+            "help": "This adjusts the vertical ratio of the UI, making it taller or thinner.",
+            "valueOptions": {
+                "min": 0.5,
+                "max": 1.5,
+                "step": 0.1,
+                "sourceType": "PropertyValueFloat",
+                "sourceForm": "PB_PlayerBlink.esp|813",
+                "propertyName": "fScaleLength"
+            },
+"action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "MCMScaleChange",
+    "params": [ ] }
+        },
+    {
+      "text": "Blink Settings",
+      "type": "section"
+    },
+{
+	  "id": "fRange",
+            "text": "Movement Distance",
+            "type": "slider",
+            "help": "This is the distance you move when you blink.",
+            "valueOptions": {
+                "min": 300,
+                "max": 1000,
+                "step": 50,
+                "sourceType": "GlobalValue",
+                "sourceForm": "PB_PlayerBlink.esp|810"}
+            },
+{
+	  "id": "fChargeTime",
+            "text": "Charge Time",
+            "type": "slider",
+            "help": "This is the time it takes to recharge after using blink.",
+            "valueOptions": {
+                "min": 0.5,
+                "max": 5,
+                "step": 0.5,
+                "sourceType": "PropertyValueFloat",
+                "sourceForm": "PB_PlayerBlink.esp|813",
+                "propertyName": "fChargeTime"
+            },
+"action": {
+    "type": "CallFunction",
+    "form": "PB_PlayerBlink.esp|813",
+    "function": "MCMchargeChange",
+    "params": [ ] }
+        },
+{
+            "text": "Movement Duration",
+            "type": "slider",
+            "help": "This is the duration you move when you blink. The longer the duration, the slower the blink movement will be.",
+            "valueOptions": {
+                "min": 0.1,
+                "max": 0.3,
+                "step": 0.02,
+                "sourceType": "GlobalValue",
+                "sourceForm": "PB_PlayerBlink.esp|80C"}
+            },
+           { "text": "Blink AP Cost",
+            "type": "slider",
+            "help": "Controls the amount of AP consumed when using Blink. The default value is 0, meaning no AP is consumed.",
+            "valueOptions": {
+                "min": 0,
+                "max": 50,
+                "step": 5,
+                "sourceType": "GlobalValue",
+                "sourceForm": "PB_PlayerBlink.esp|80D"}
+            }
+    ]
+}
