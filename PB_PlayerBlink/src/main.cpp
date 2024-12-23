@@ -427,9 +427,7 @@ class MenuWatcher : public BSTEventSink<MenuOpenCloseEvent>
 		BodyPartsUI* bpUI = BodyPartsUI::GetSingleton();
 		if (msgQ && !ui->GetMenuOpen(UIName))
 		{
-			if (!ui->GetMenuOpen(UIName)) {
-				msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kShow);
-			}
+			msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kShow);
 		}
 
 		//_MESSAGE("Menu %s opening %d", evn.menuName.c_str(), evn.opening);
