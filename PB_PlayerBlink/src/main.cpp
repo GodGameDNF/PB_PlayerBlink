@@ -47,14 +47,19 @@ float movePerY;
 
 bool blinkRunning = false;
 
-
-
 HMODULE hAVF = GetModuleHandleA("ActorVelocityFramework.dll");
 typedef void (*SetVelocity)(std::monostate, Actor*, float, float, float, float, float, float, float);
 SetVelocity fnSetVelocity = (SetVelocity)GetProcAddress(hAVF, "SetVelocity");
 
 const static std::string UIName{ "blinkHUDUI" };
 UIMessageQueue* msgQ = nullptr;
+
+int hideCount = 0;
+bool isLoading = false;
+std::vector<std::string> hideMenuList = { "BarterMenu", "ContainerMenu", "CookingMenu", "CreditsMenu", "DialogueMenu", "ExamineMenu", "LevelUpMenu",
+	"LockpickingMenu", "LooksMenu", "MessageBoxMenu", "PauseMenu", "PipboyMenu", "BookMenu",
+	"SPECIALMenu", "TerminalHolotapeMenu", "TerminalMenu", "VATSMenu", "WorkshopMenu", "SitWaitMenu", "SleepWaitMenu",
+	"F4QMWMenu" };
 
 float FirstPosX = 0;
 float FirstPosY = 0;
@@ -370,6 +375,20 @@ bool SetINIFileHotkey(std::monostate)
 	}
 }
 
+bool isMenuMatching(const BSFixedString& menuName)
+{
+	// 함수 내부에 static으로 선언
+	static const std::vector<std::string> menuNames = {
+		"BarterMenu",
+		"Console",
+		"ContainerMenu",
+		"PipboyMenu"
+	};
+
+	// 배열에서 menuName이 존재하는지 확인
+	return std::find(menuNames.begin(), menuNames.end(), menuName) != menuNames.end();
+}
+/*
 class MenuWatcher : public BSTEventSink<MenuOpenCloseEvent>
 {
 	virtual BSEventNotifyControl ProcessEvent(const MenuOpenCloseEvent& evn, BSTEventSource<MenuOpenCloseEvent>* src) override
@@ -377,7 +396,7 @@ class MenuWatcher : public BSTEventSink<MenuOpenCloseEvent>
 		if (msgQ){
 			BSFixedString menuNameString = evn.menuName; 
 
-			if (menuNameString != "blinkHUDUI" || menuNameString != "FavoritesMenu") {
+			if (isMenuMatching(menuNameString)) {
 				if (evn.opening) {
 					if (ui->GetMenuOpen(UIName)) {
 						msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kHide);
@@ -387,9 +406,69 @@ class MenuWatcher : public BSTEventSink<MenuOpenCloseEvent>
 						msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kShow);
 					}
 				}
+			} else if (menuNameString != UIName) {
+				msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kShow);
+			}
+		} 
+
+		return BSEventNotifyControl::kContinue;
+	}
+};
+*/
+
+
+
+class MenuWatcher : public BSTEventSink<MenuOpenCloseEvent>
+{
+	virtual BSEventNotifyControl ProcessEvent(const MenuOpenCloseEvent& evn, BSTEventSource<MenuOpenCloseEvent>* src) override
+	{
+		UI* ui = UI::GetSingleton();
+		UIMessageQueue* msgQ = UIMessageQueue::GetSingleton();
+		BodyPartsUI* bpUI = BodyPartsUI::GetSingleton();
+		if (msgQ && !ui->GetMenuOpen(UIName))
+		{
+			if (!ui->GetMenuOpen(UIName)) {
+				msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kShow);
 			}
 		}
 
+		//_MESSAGE("Menu %s opening %d", evn.menuName.c_str(), evn.opening);
+		if (evn.menuName == BSFixedString("LoadingMenu")) {
+			if (evn.opening) {
+				isLoading = true;
+			} else {
+				hideCount = 0;
+				for (auto it = hideMenuList.begin(); it != hideMenuList.end(); ++it) {
+					if (ui->GetMenuOpen(*it)) {
+						++hideCount;
+					}
+				}
+				isLoading = false;
+			}
+		}
+		for (auto it = hideMenuList.begin(); it != hideMenuList.end(); ++it) {
+			if (evn.menuName == *it) {
+				if (evn.opening) {
+					++hideCount;
+					//_MESSAGE("%s ++ %d", evn.menuName.c_str(), hideCount);
+				} else {
+					--hideCount;
+					//_MESSAGE("%s -- %d", evn.menuName.c_str(), hideCount);
+				}
+				break;
+			}
+		}
+		if (bpUI) {
+			if (hideCount  > 0) {
+				if (ui->GetMenuOpen(UIName)) {
+					msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kHide);
+				}
+			} else if (hideCount == 0) {// && !isMenuOpen) {
+				if (!ui->GetMenuOpen(UIName)) {
+					msgQ->AddMessage(UIName, RE::UI_MESSAGE_TYPE::kShow);
+				}
+			}
+		}
 		return BSEventNotifyControl::kContinue;
 	}
 };
